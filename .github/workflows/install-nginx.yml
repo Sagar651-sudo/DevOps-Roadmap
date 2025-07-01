@@ -1,0 +1,26 @@
+name: Install NGINX on Amazon Linux
+
+on:
+  workflow_dispatch:
+
+jobs:
+  install-nginx:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install NGINX on Amazon Linux via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ec2-user
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          sudo yum update -y
+          sudo amazon-linux-extras enable nginx1
+          sudo yum install -y nginx
+          sudo systemctl start nginx
+          sudo systemctl enable nginx
